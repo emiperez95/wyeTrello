@@ -1,1 +1,1 @@
-web: gunicorn wyetrello.wsgi
+web: gunicorn wyeTrello.wsgi
