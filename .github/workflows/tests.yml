@@ -3,10 +3,10 @@ name: Tests
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 jobs:
@@ -19,8 +19,8 @@ jobs:
         with:
           python-version: 3.9.1
           
-      - name: Start docker-compose
-        run: docker-compose up -d
+#       - name: Start docker-compose
+#         run: docker-compose up -d
         
       - name: Restore cache
         uses: actions/cache@v2
