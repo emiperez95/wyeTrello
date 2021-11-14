@@ -9,9 +9,19 @@
 {% endfor %}
 
 <br><br><br><br>
+<a href="https://developer.spotify.com/console/get-search-item/">Get spotify key</a><br>
+<a href="https://trello.com/app-key/">Get trello key</a>
 
-<form action="" method="POST"> {% csrf_token %}
-    {{ form }}
+<br><br><br><br>
+
+<form method="POST" enctype="multipart/form-data"> {% csrf_token %}
+    {% for f in form %}
+        {%if f.name == "trelloToken"%}
+            {{ f.label }}: <input type="text" name="trelloToken" maxlength="100" required id="id_trelloKey" value="9d3eb1cc30cc95e14fff0bb695c79c05405832bb5ff9323711a34b92fd57113c"><br>
+        {% else %}
+            {{ f.label }}: {{ f }}<br>
+        {% endif %}
+    {% endfor%}
     <input type="submit" value="Post">
 </form>
 
