@@ -1,28 +1,65 @@
-{% extends 'base.html' %}
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/login.css" %}">
+{{ form.media }}
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
 
 {% block content %}
+{% if form.errors and not form.non_field_errors %}
+<p class="errornote">
+{% if form.errors.items|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+</p>
+{% endif %}
 
-{% for entry in entries %}
-    {{entry.name}}<br>
-    {{entry.trelloKey}}<br>
-    {{entry.date}}<br><br><br>
+{% if form.non_field_errors %}
+{% for error in form.non_field_errors %}
+<p class="errornote">
+    {{ error }}
+</p>
 {% endfor %}
+{% endif %}
 
-<br><br><br><br>
-<a href="https://developer.spotify.com/console/get-search-item/">Get spotify key</a><br>
-<a href="https://trello.com/app-key/">Get trello key</a>
+<div id="content-main">
 
-<br><br><br><br>
-
-<form method="POST" enctype="multipart/form-data"> {% csrf_token %}
-    {% for f in form %}
-        {%if f.name == "trelloToken"%}
-            {{ f.label }}: <input type="text" name="trelloToken" maxlength="100" required id="id_trelloKey" value="9d3eb1cc30cc95e14fff0bb695c79c05405832bb5ff9323711a34b92fd57113c"><br>
-        {% else %}
-            {{ f.label }}: {{ f }}<br>
-        {% endif %}
-    {% endfor%}
-    <input type="submit" value="Post">
+<form method="post" id="login-form" enctype="multipart/form-data">{% csrf_token %}
+    <div class="form-row">
+        {{ form.name.errors }}
+        {{ form.name.label_tag }} {{ form.name }}
+    </div>
+    <div class="form-row">
+        {{ form.board_name.errors }}
+        {{ form.board_name.label_tag }} {{ form.board_name }}
+    </div>
+    <div class="form-row">
+        {{ form.trelloToken.errors }}
+        {{ form.trelloToken.label_tag }} <input type="text" name="trelloToken" maxlength="100" required id="id_trelloKey" value="9d3eb1cc30cc95e14fff0bb695c79c05405832bb5ff9323711a34b92fd57113c">
+        <a href="https://trello.com/app-key/" target="_blank">Get trello key</a>
+    </div>
+    <div class="form-row">
+        {{ form.spotifyToken.errors }}
+        {{ form.spotifyToken.label_tag }} <input type="text" name="spotifyToken" maxlength="512" required id="id_spotifyToken">
+        <a href="https://developer.spotify.com/console/get-search-item/" target="_blank">Get spotify key</a>
+    </div>
+    <div class="form-row">
+        {{ form.file.errors }}
+        {{ form.file.label_tag }} {{ form.file }}
+    </div>
+    <div class="submit-row">
+        <input type="submit" value="{% translate 'Send'%}">
+    </div>
 </form>
-
+</div>
 {% endblock %}

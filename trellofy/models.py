@@ -12,7 +12,7 @@ class MiniUser(models.Model):
     name = models.CharField(_("artist name"), max_length=50)
     board_name = models.CharField(_("Board name"), max_length=50)
     trelloToken = models.CharField(_("trello token"), max_length=100)
-    spotifyToken = models.CharField(_("spotify token"), max_length=100, default=0)
+    spotifyToken = models.CharField(_("spotify token"), max_length=512, default=0)
     date = models.DateTimeField(_("date added"), auto_now=False, auto_now_add=False)
     file = models.FileField(_("Albums file"), null=False, blank=False)
 
