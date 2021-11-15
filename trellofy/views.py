@@ -32,13 +32,12 @@ def index(request):
                 for album in albums:
                     make_card(album.year, album.name, listId, trelloKey, trelloToken, spotifyToken)
 
-            except Exception as e:
-                user.delete()
-                messages.add_message(request, messages.ERROR, e)
-            finally:
                 messages.add_message(request, messages.INFO,
                                      mark_safe("Trello cards succesfully created. <a href='{}' target='_blank'>Link</a>"
                                                .format(boardUrl)))
+            except Exception as e:
+                user.delete()
+                messages.add_message(request, messages.ERROR, e)
 
     else:
         form = UserForm()
