@@ -33,7 +33,7 @@ class MiniUser(models.Model):
 
 class Album(models.Model):
 
-    name = models.CharField(_("Album name"), max_length=50)
+    name = models.CharField(_("Album name"), max_length=256)
     year = models.CharField(_("Album year"), max_length=5)
     user = models.ForeignKey("MiniUser", verbose_name=_("user"), on_delete=models.CASCADE)
 
