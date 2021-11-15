@@ -3,6 +3,7 @@ import requests
 import logging
 from django.shortcuts import render
 from django.contrib import messages
+from django.conf import settings
 from django.utils.safestring import mark_safe
 from trellofy.models import UserForm, Album
 
@@ -38,6 +39,8 @@ def index(request):
             except Exception as e:
                 user.delete()
                 messages.add_message(request, messages.ERROR, e)
+                if settings.DEBUG:
+                    raise e
 
     else:
         form = UserForm()
