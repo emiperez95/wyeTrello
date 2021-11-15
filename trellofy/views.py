@@ -1,6 +1,7 @@
 import re
 import requests
 import logging
+import threading
 from django.shortcuts import render
 from django.contrib import messages
 from django.conf import settings
@@ -29,13 +30,13 @@ def index(request):
                 boardId, boardUrl = get_board_id_by_name(board_name, trelloKey, trelloToken)
                 listId = make_list(name, boardId, trelloKey, trelloToken)
 
-                albums = Album.objects.filter(user_id=user.id).order_by('year', 'name')
-                for album in albums:
-                    make_card(album.year, album.name, listId, trelloKey, trelloToken, spotifyToken)
+                thread_args = [user.id, listId, trelloKey, trelloToken, spotifyToken]
+                threading.Thread(target=albums_thread, args=thread_args).start()
 
-                messages.add_message(request, messages.INFO,
-                                     mark_safe("Trello cards succesfully created. <a href='{}' target='_blank'>Link</a>"
-                                               .format(boardUrl)))
+                success_msg = "Success!! Your trello cards are being created at <a href='{}' target='_blank'>Link</a>"\
+                    .format(boardUrl)
+                messages.add_message(request, messages.INFO, mark_safe(success_msg))
+
             except Exception as e:
                 user.delete()
                 messages.add_message(request, messages.ERROR, e)
@@ -104,6 +105,12 @@ def make_list(list_name, board_id, key, token):
         return response.json()["id"]
     else:
         raise Exception('Recieved {} on create_list_query method'.format(response.status_code))
+
+
+def albums_thread(user_id, listId, trelloKey, trelloToken, spotifyToken):
+    albums = Album.objects.filter(user_id=user_id).order_by('year', 'name')
+    for album in albums:
+        make_card(album.year, album.name, listId, trelloKey, trelloToken, spotifyToken)
 
 
 def make_card(year, name, list_id, trelloKey, trelloToken, spotifyKey):
